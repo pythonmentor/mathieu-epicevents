@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 sqlalchemy = "*"
 pymysql = {extras = ["rsa"], version = "*"}
+argon2-cffi = "*"
+pyjwt = "*"
 
 [dev-packages]
 

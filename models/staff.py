@@ -31,3 +31,39 @@ class Staff(Base):
 
     def __repr__(self) -> str:
         return f"Staff(id={self.id!r}, name={self.name!r}, first_name={self.first_name!r})"
+    
+
+class StaffRepository:
+
+    @classmethod
+    def find_by_name(cls, session, name):
+        return session.query(cls).filter_by(fullname=name).all()
+    
+    @classmethod
+    def find_by_id(cls, session, id) :
+        return session.query(cls).filter_by(id=id).all()
+    
+    @classmethod
+    def find_by_email(cls, session, email) :
+        return session.query(cls).filter_by(email=email).all()
+    
+    @classmethod
+    def get_all(cls, session) :
+        return session.query(cls).all()
+
+    def create_staff(self, session, staff):
+        staff = Staff(name="Connor", first_name="Sarah", email="sarah@gmail.com", password="sarah", department="support")
+        session.add(staff)
+        self.save(session)
+        
+    def update(self, table, staff, column, new_value):
+        staff.column = new_value
+        self.save()
+        
+    def delete(self, session, staff):
+        session.delete(staff)
+        self.save()
+        
+    def save(self, session):
+        session.commit() 
+

@@ -30,4 +30,37 @@ rappel : client_name, client_contact_email, client_contact_phone : FK
 
 """
 
+class EventRepository:
+
+    @classmethod
+    def find_by_name(cls, session, name):
+        return session.query(cls).filter_by(name=name).all()
+    
+    @classmethod
+    def find_by_id(cls, session, id) :
+        return session.query(cls).filter_by(id=id).all()
+    
+    @classmethod
+    def find_by_client_id(cls, session, client_id) :
+        return session.query(cls).filter_by(email=client_id).all()
+    
+    @classmethod
+    def get_all(cls, session) :
+        return session.query(cls).all()
+
+    def create_staff(self, session, staff):
+        event = Event(name="Jeux Olympique")
+        session.add(event)
+        self.save(session)
+        
+    def update(self, table, event, column, new_value):
+        event.column = new_value
+        self.save()
+        
+    def delete(self, session, event):
+        session.delete(event)
+        self.save()
+        
+    def save(self, session):
+        session.commit() 
 

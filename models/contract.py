@@ -25,3 +25,38 @@ client) ;
 statut (= si le contrat a été signé) : boolean
 
 """
+
+
+class ContractRepository:
+
+    @classmethod
+    def find_by_name(cls, session, name):
+        return session.query(cls).filter_by(name=name).all()
+    
+    @classmethod
+    def find_by_id(cls, session, id) :
+        return session.query(cls).filter_by(id=id).all()
+    
+    @classmethod
+    def find_by_client_id(cls, session, client_id) :
+        return session.query(cls).filter_by(client_id=client_id).all()
+    
+    @classmethod
+    def get_all(cls, session) :
+        return session.query(cls).all()
+
+    def create_staff(self, session, staff):
+        contract = Contract(name="Jeux Olympique")
+        session.add(contract)
+        self.save(session)
+        
+    def update(self, table, contract, column, new_value):
+        contract.column = new_value
+        self.save()
+        
+    def delete(self, session, contract):
+        session.delete(contract)
+        self.save()
+        
+    def save(self, session):
+        session.commit() 
