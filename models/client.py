@@ -1,12 +1,10 @@
+import configparser
 import typing
 import enum
 from datetime import date
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Table, Enum, update
-from typing import List, Optional
-from typing import Optional
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Table, Enum, update, text, create_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from CONFIG import ENGINE
 
 
 class Base(DeclarativeBase):
@@ -18,8 +16,8 @@ class Base(DeclarativeBase):
 client_staff_association = Table(
     'client_staff',
     Base.metadata,
-    Column('client_id', Integer, ForeignKey('client.id')),
-    Column('staff_id', Integer, ForeignKey('staff.id'))
+    Column('client_id', Integer, ForeignKey('client.id'), primary_key=True),
+    Column('staff_id', Integer, ForeignKey('staff.id'), primary_key=True)
 )
 
 class Client(Base):
@@ -32,13 +30,8 @@ class Client(Base):
     name_company : Mapped[str] = mapped_column(String(300))
     date_creation : Mapped[date] = mapped_column(insert_default=func.now())
     date_update : Mapped[date] = mapped_column(insert_default=func.now())
-    staffs = relationship('Staff', secondary=client_staff_association, back_populates='clients')
-    #staff_member_commercial : Mapped[int] = mapped_column(ForeignKey("staff_member.id"), nullable=True)
-    #staff_member_support : Mapped[int] = mapped_column(ForeignKey("staff_member.id"), nullable=True)
-    #staff_member_management : Mapped[int] = mapped_column(ForeignKey("staff_member.id"), nullable=True)
-        
-
-    #parents : Mapped[List[Staff_member]] = relationship(secondary=staff_member_client_table, back_populates="children")
+    #staffs = relationship('Staff', secondary=client_staff_association, back_populates='clients')      
+    #staffs : Mapped[List[Staff_member]] = relationship(secondary=client_staff_association, back_populates="clients")
     
     def __repr__(self) -> str:
         return f"Client(id={self.id}, fullname={self.fullname})"
@@ -46,21 +39,26 @@ class Client(Base):
 
 class ClientRepository:
 
-    @classmethod
-    def find_by_name(cls, session, fullname):
-        return session.query(cls).filter_by(fullname=fullname).all()
+    def find_by_fullname(self, fullname):
+        with ENGINE.connect() as conn:
+            result = conn.execute(text(f"SELECT * FROM client WHERE fullname = '{fullname}'"))
+        return result
     
-    @classmethod
-    def find_by_id(cls, session, id) :
-        return session.query(cls).filter_by(id=id).all()
+    def find_by_id(self, id) :
+        with ENGINE.connect() as conn:
+            result = conn.execute(text(f"SELECT * FROM client WHERE id = {id}"))
+        return result
     
     @classmethod
     def find_by_email(cls, session, email) :
         return session.query(cls).filter_by(email=email).all()
     
-    @classmethod
-    def get_all(cls, session) :
-        return session.query(cls).all()
+    
+    def get_all(self) :
+        with ENGINE.connect() as conn:
+            result = conn.execute(text("SELECT * FROM client"))
+        return result
+        #return session.query(cls).all()
 
     def create_client(self, session, staff):
         client = Client(fullname='John Snow', email="john@life.fr", phone=215452014, name_company="Entreprise Coucou", staff_member_commercial=staff.id)

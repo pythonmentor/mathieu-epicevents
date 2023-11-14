@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Enum, Ta
 from typing import List, Optional
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from models.client import Base, client_staff_association
+from models.client import Base, client_staff_association, Client
 
 
 
@@ -25,8 +25,8 @@ class Staff(Base):
     email : Mapped[str] = mapped_column(String(300))
     password : Mapped[str] = mapped_column(String(50))
     department : Mapped[Department]
-    clients = relationship('Staff', secondary=client_staff_association, back_populates='staffs')
-    #children: Mapped[List[Client]] = relationship(secondary=staff_member_client_table, back_populates="parents")
+    #clients = relationship('Staff', secondary=client_staff_association, back_populates='staffs')
+    clients: Mapped[List[Client]] = relationship(secondary=client_staff_association)
 
 
     def __repr__(self) -> str:

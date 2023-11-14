@@ -7,7 +7,10 @@ name = "pypi"
 sqlalchemy = "*"
 pymysql = {extras = ["rsa"], version = "*"}
 argon2-cffi = "*"
-pyjwt = "*"
+pytest = "*"
+pytest-mock = "*"
+pyjwt = {extras = ["crypto"], version = "*"}
+cryptography = "*"
 
 [dev-packages]
 
