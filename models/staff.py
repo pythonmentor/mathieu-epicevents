@@ -4,10 +4,14 @@ from typing import Literal
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Enum, Table
 from typing import List, Optional
-from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from models.client import Base, client_staff_association, Client
 
+from models.contract import Contract
+from models.event import Event
+
+
+class Base(DeclarativeBase):
+    pass
 
 
 
@@ -25,8 +29,11 @@ class Staff(Base):
     email : Mapped[str] = mapped_column(String(300))
     password : Mapped[str] = mapped_column(String(50))
     department : Mapped[Department]
-    #clients = relationship('Staff', secondary=client_staff_association, back_populates='staffs')
-    clients: Mapped[List[Client]] = relationship(secondary=client_staff_association)
+    #clients: Mapped[List["Client"]] = relationship()
+    clients = relationship("Client", back_populates="staff")
+    contracts: Mapped[List["Contract"]] = relationship()
+    events : Mapped[List[Event]] = relationship()
+
 
 
     def __repr__(self) -> str:

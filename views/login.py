@@ -17,11 +17,7 @@ class ViewLogin:
         password = input("Password : ")
         return password
     
-    def message_error(self, message_number):
-        if message_number == 1:
-            print("Email ou mot de passe invalide")
-        elif message_number == 2: 
-            print ('Veuillez vous authentifier avec la commande "python -m epic_events login" !')
+    
 
     def clean(self):
         """Fonction qui efface l'affichage de la console"""

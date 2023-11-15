@@ -1,10 +1,14 @@
-import configparser
+from __future__ import annotations
 import typing
+from typing import List
 import enum
 from datetime import date
-from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Table, Enum, update, text, create_engine
+from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Table, Enum, update, text, insert
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from CONFIG import ENGINE
+from models.staff import Staff
+from models.contract import Contract
+from models.event import Event
 
 
 class Base(DeclarativeBase):
@@ -13,15 +17,8 @@ class Base(DeclarativeBase):
         typing.Literal: Enum(enum.Enum),
     }
 
-client_staff_association = Table(
-    'client_staff',
-    Base.metadata,
-    Column('client_id', Integer, ForeignKey('client.id'), primary_key=True),
-    Column('staff_id', Integer, ForeignKey('staff.id'), primary_key=True)
-)
 
 class Client(Base):
-    #from models.staff import Staff
     __tablename__ = 'client'
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     fullname: Mapped[str] = mapped_column(String(100), unique=True)
@@ -30,8 +27,11 @@ class Client(Base):
     name_company : Mapped[str] = mapped_column(String(300))
     date_creation : Mapped[date] = mapped_column(insert_default=func.now())
     date_update : Mapped[date] = mapped_column(insert_default=func.now())
-    #staffs = relationship('Staff', secondary=client_staff_association, back_populates='clients')      
-    #staffs : Mapped[List[Staff_member]] = relationship(secondary=client_staff_association, back_populates="clients")
+    #contact_commercial_id : Mapped[int] = mapped_column(ForeignKey("staff.id"))
+    contact_commercial_id = mapped_column(ForeignKey("staff.id"))
+    staff = relationship("Staff", back_populates="clients")
+    contracts: Mapped[List["Contract"]] = relationship()
+    events: Mapped[List["Event"]] = relationship()
     
     def __repr__(self) -> str:
         return f"Client(id={self.id}, fullname={self.fullname})"
@@ -60,10 +60,14 @@ class ClientRepository:
         return result
         #return session.query(cls).all()
 
-    def create_client(self, session, staff):
-        client = Client(fullname='John Snow', email="john@life.fr", phone=215452014, name_company="Entreprise Coucou", staff_member_commercial=staff.id)
-        session.add(client)
+    def create_client(self, session, datas):
+        client = Client(fullname=datas["fullname"], email=datas["email"], phone=datas["phone"], name_company=datas["name_company"])
+        #staff_member_commercial=staff.id
+        session.merge(client)
+        # ou session.add(client)
+        #session.execute(insert(User)
         self.save(session)
+
         
     def update(self, table, client, column, new_value):
         client.column = new_value

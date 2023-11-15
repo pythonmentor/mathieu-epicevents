@@ -77,7 +77,7 @@ class Menu:
                 print()
 
     
-    def menu_read_only(self,name_submenu):
+    def view_menu_read_only(self,name_submenu):
         """
         Affiche le sous menu (client ou contrat ou évenènement ou collaborateur)
         retourne le choix de l'utilisateur
@@ -106,31 +106,7 @@ class Menu:
                 self.clean()
                 print()
           
-    def get_fullname(self):
-        name = input("Nom : ").capitalize()
-        firstname = input ("Prénom : ").capitalize()
-        fullname = firstname+" "+name
-        return fullname
-        
-    def get_id(self):
-        id = int(input("N° du client:"))
-        return id
-    
-    def get_create_datas(self, table):
-        if table == 'client':
-            print("Veuillez taper les données suivantes.")
-            fullname = input("Fullname : ")
-            email = input("Email : ")
-            phone = input("Phone : ")
-            name_company = input("Name company : ")
-            datas = {"fullname" : fullname, "email": email, "phone": phone, "name_company": name_company}
-            return datas
 
-            
-    def messages(self, table, message_number):
-        if message_number == 1:
-            print(f'Le {table} a bien été enregistré')
-            
     def clean(self):
         """Fonction qui efface l'affichage de la console"""
         if platform.system() == "Windows":

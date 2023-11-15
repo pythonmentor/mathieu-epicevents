@@ -7,11 +7,13 @@ from models.client import Client, ClientRepository
 from controllers.menu_manager import MenuManager
 from views.menu import Menu
 from views.login import ViewLogin
+from views.messages import Messages
 
 class AuthenticationAndPermissions:
 
     def __init__(self):
         self.menu=Menu()
+        self.messages = Messages()
         self.password = password
         self.ph = PasswordHasher()
 
@@ -32,14 +34,15 @@ class AuthenticationAndPermissions:
         staff_member = SESSION.query(Staff).filter_by(email=email).first()
         #print("staff_member: ", staff_member)
         if staff_member and staff_member.email == email and staff_member.password == password :
+            user_id = staff_member.id
             department = staff_member.department.value
             token = self.create_token(department)
-            menu_manager = MenuManager(token)
+            menu_manager = MenuManager(user_id, token)
             print("token :", token)
             return menu_manager.choice_main_menu()
             
         else:
-            login.message_error(1)
+            self.messages.message_error(1)
             return self.check_password()
         
 
