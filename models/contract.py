@@ -4,8 +4,10 @@ from sqlalchemy import Column, Integer, Text, String, func, ForeignKey
 from typing import List, Optional
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-#from models.client import Base
-#import models.event
+#from main import Event
+
+
+
 
 class Base(DeclarativeBase):
     pass
@@ -17,8 +19,8 @@ class Contract(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     client_id: Mapped[int] = mapped_column(ForeignKey("client.id"))
     commercial_contact_id : Mapped[int] = mapped_column(ForeignKey("staff.id"))
-    #event: Mapped["event.Event"] = relationship(back_populates="contract")
-    event = relationship("Event", back_populates="contract")
+    commercial_contact_id = relationship('Staff')
+    event: Mapped["Event"] = relationship(back_populates="contract")
     total_amount : Mapped[int]
     balace_due : Mapped[int]
     date_creation : Mapped[date] = mapped_column(insert_default=func.now())

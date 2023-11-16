@@ -6,8 +6,7 @@ from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Enum, Ta
 from typing import List, Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from models.contract import Contract
-from models.event import Event
+
 
 
 class Base(DeclarativeBase):
@@ -29,10 +28,11 @@ class Staff(Base):
     email : Mapped[str] = mapped_column(String(300))
     password : Mapped[str] = mapped_column(String(50))
     department : Mapped[Department]
-    #clients: Mapped[List["Client"]] = relationship()
-    clients = relationship("Client", back_populates="staff")
-    contracts: Mapped[List["Contract"]] = relationship()
-    events : Mapped[List[Event]] = relationship()
+    #clients: Mapped[List["Client"]] = relationship(back_populates="contact_commercial")
+    #contracts: Mapped[List["Contract"]] = relationship(back_populates="commercial_contact")
+    #events: Mapped[List["Event"]] = relationship(back_populates="support_contact")
+ 
+ 
 
 
 

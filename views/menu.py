@@ -88,8 +88,8 @@ class Menu:
             print()
             menu_options = {
                 1: f"Afficher tous les {name_submenu}s",
-                2: f'Chercher un {name_submenu} par son nom complet',
-                3: f'Chercher un {name_submenu} par son numéro de compte(id)',
+                2: f'Trouver un {name_submenu} par son nom complet',
+                3: f'Trouver un {name_submenu} par son numéro de compte(id)',
                 4: "Retour au menu principal",
                 5: "Fermer",
                
@@ -105,6 +105,33 @@ class Menu:
                 time.sleep(2)
                 self.clean()
                 print()
+
+    def choice_column_to_update_client(self):
+        while True:
+            print()
+            print(f'*****Modifier un compte client*****')
+            print("Liste des champs modifiables : ")
+            list_of_editable_update_columns = {
+                1: "fullname",
+                2: "email",
+                3: "phone",
+                4: "name_company",
+                5: "Retour au menu principal",
+                6: "Fermer",
+               
+            }
+            for key in list_of_editable_update_columns:
+                print(key, "--", list_of_editable_update_columns[key])
+                print()
+            try:
+                number_column_to_update = int(input("Entrer votre choix : "))
+                return list_of_editable_update_columns[number_column_to_update]
+            except ValueError:
+                print("Vous devez taper un nombre entre 1 et 6.")
+                time.sleep(2)
+                self.clean()
+                print()
+
           
 
     def clean(self):

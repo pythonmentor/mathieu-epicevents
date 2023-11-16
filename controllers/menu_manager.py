@@ -14,14 +14,15 @@ from controllers.crud_manager import CrudManager
 
 
 class MenuManager:
-    def __init__(self, user_id, token):
+    def __init__(self, staff_id, token):
         self.token = token
         self.menu = Menu()
         self.messages = Messages()
         self.display=Display()
         self.get_datas = GetDatas()
         self.permissions = Permissions()
-        self.user_id = user_id
+        self.crud = CrudManager(staff_id, token)
+        self.staff_id = staff_id
        
 
     def choice_main_menu(self):
@@ -44,47 +45,54 @@ class MenuManager:
     def choice_submenu(self, table):
         option = self.menu.submenu(table)
         # Option 1 = Consulter. Dans ce cas, seul la validité du token est vérifiée car tous les collaborateurs authentifiés sont autorisées à lire les données
+        
         if option == 1:
-            return self.manager_menu_read_only(table)
-        if option == 2:
-            if self.permissions.permission_create(self.token, table):
-                datas = self.get_datas.get_create_datas(table)
-                crud = CrudManager(table, datas)
-                crud.create(table, datas)
+            self.manager_menu_read_only(table)
+            return self.choice_main_menu()
+        elif option == 2:
+            if self.crud.create(table):
                 self.messages.messages_ok(table, 1)
                 return self.choice_main_menu()
-            else:
+        elif option == 3:
+            if self.crud.modify(table):
+                self.messages.messages_ok(table, 2)
+                return self.choice_main_menu()
+            else: 
                 self.messages.message_error(3)
                 return self.choice_main_menu()
-        if option == 3:
-            pass
 
-            
-        if option == 4:
+        elif option == 4:
             pass
+        else:
+            self.messages.message_error(3)
+            return self.choice_main_menu()
     
 
     def manager_menu_read_only(self, table):
         print("read_only")
         option = self.menu.view_menu_read_only(table)
         if self.permissions.check_token_validity():
-            repository = ClientRepository()
+            client_repository = ClientRepository()
             if option == 1:
-                query = repository.get_all()
+                query = client_repository.get_all()
                 self.display.display_all_table(query)
-                return self.choice_main_menu()
+                
             if option == 2:
                 fullname = self.get_datas.get_fullname()
-                repository = ClientRepository()
-                query = repository.find_by_fullname(fullname)
+                client_repository = ClientRepository()
+                query = client_repository.find_by_fullname(fullname)
                 self.display.display_one_object(query)
-                return self.choice_main_menu()
+                
             if option == 3:
                 id = self.get_datas.get_id()
-                repository = ClientRepository()
-                query = repository.find_by_id(id)
+                client_repository = ClientRepository()
+                query = client_repository.find_by_id(id)
                 self.display.display_one_object(query)
-                return self.choice_main_menu()
+            
+    
+        
+        
+
 
 
     

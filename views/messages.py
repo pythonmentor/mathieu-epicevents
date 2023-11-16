@@ -5,6 +5,8 @@ class Messages:
     def messages_ok(self, table, message_number):
         if message_number == 1:
             print(f'Le {table} a bien été enregistré')
+        if message_number == 2:
+            print(f'Le {table} a bien été modifié')
 
     def message_error(self, message_number):
         if message_number == 1:

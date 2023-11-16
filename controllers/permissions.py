@@ -1,5 +1,6 @@
 import jwt
-from CONFIG import SECRET, SESSION
+from sqlalchemy import Column, Integer, String, func, ForeignKey, Table, Enum, update, text, insert
+from CONFIG import SECRET, SESSION, ENGINE
 from views.login import ViewLogin
 from views.messages import Messages
 
@@ -29,14 +30,27 @@ class Permissions:
         else:
             return False
         
-    def permission_update(self, user_id, token, table):
-         
+    def permission_update(self, staff_id, client_id, token, table): 
         if self.check_token_validity(token):
             token_decode = self.check_token_validity(token)
             department = token_decode['department']
+            print("department : ", department)
             if table == "client":
-                if department == "commercial":
-                    pass
+                print (department == "commercial" and self.is_own_client(staff_id, client_id,))
+                return department == "commercial" and self.is_own_client(staff_id, client_id,)
+        else:
+            return False
+                    
+
+
+    def is_own_client(self, staff_id, client_id):
+
+        with ENGINE.connect() as conn:
+            result = conn.execute(text(f"SELECT * FROM client JOIN staff ON client.contact_commercial_id = staff.id WHERE staff.id = {staff_id};"))
+        for row in result:
+            return client_id == row[0]
+        
+                
 
 
 

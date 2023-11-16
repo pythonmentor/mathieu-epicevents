@@ -3,7 +3,6 @@ from CONFIG import password, SECRET, SESSION
 from models.staff import Staff
 import jwt
 from datetime import datetime, timedelta
-from models.client import Client, ClientRepository
 from controllers.menu_manager import MenuManager
 from views.menu import Menu
 from views.login import ViewLogin
