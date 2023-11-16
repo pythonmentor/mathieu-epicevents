@@ -28,9 +28,9 @@ class Staff(Base):
     email : Mapped[str] = mapped_column(String(300))
     password : Mapped[str] = mapped_column(String(50))
     department : Mapped[Department]
-    #clients: Mapped[List["Client"]] = relationship(back_populates="contact_commercial")
-    #contracts: Mapped[List["Contract"]] = relationship(back_populates="commercial_contact")
-    #events: Mapped[List["Event"]] = relationship(back_populates="support_contact")
+    clients: Mapped[List["Client"]] = relationship(back_populates="contact_commercial")
+    contracts: Mapped[List["Contract"]] = relationship(back_populates="commercial_contact")
+    events: Mapped[List["Event"]] = relationship(back_populates="support_contact")
  
  
 

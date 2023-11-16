@@ -28,9 +28,9 @@ class Client(Base):
     date_creation : Mapped[date] = mapped_column(insert_default=func.now())
     date_update : Mapped[date] = mapped_column(insert_default=func.now())
     contact_commercial_id: Mapped[int] = mapped_column(ForeignKey("staff.id"))
-    #contact_commercial_id: Mapped[List["Staff"]] = relationship(back_populates="client")
-    #contracts: Mapped[List["Contract"]] = relationship(back_populates="contract")
-    #events: Mapped[List["Event"]] = relationship()
+    contact_commercial_id: Mapped[List["Staff"]] = relationship(back_populates="client")
+    contracts: Mapped[List["Contract"]] = relationship(back_populates="contract")
+    events: Mapped[List["Event"]] = relationship()
     
     def __repr__(self) -> str:
         return f"Client(id={self.id}, fullname={self.fullname})"
