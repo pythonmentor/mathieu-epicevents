@@ -5,12 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, Integer, Text, String, func, ForeignKey, Enum, Table
 from typing import List, Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-
-
-
-class Base(DeclarativeBase):
-    pass
+from settings import Base
 
 
 
@@ -28,8 +23,12 @@ class Staff(Base):
     email : Mapped[str] = mapped_column(String(300))
     password : Mapped[str] = mapped_column(String(50))
     department : Mapped[Department]
-    clients: Mapped[List["Client"]] = relationship(back_populates="contact_commercial")
+
+    
+    clients: Mapped[List["Client"]] = relationship(back_populates="commercial_contact")
+
     contracts: Mapped[List["Contract"]] = relationship(back_populates="commercial_contact")
+
     events: Mapped[List["Event"]] = relationship(back_populates="support_contact")
  
  

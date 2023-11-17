@@ -1,5 +1,5 @@
 from argon2 import PasswordHasher, exceptions
-from CONFIG import password, SECRET, SESSION
+from settings import password, SECRET, SESSION
 from models.staff import Staff
 import jwt
 from datetime import datetime, timedelta

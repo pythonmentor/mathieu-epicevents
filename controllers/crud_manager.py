@@ -3,7 +3,7 @@ from models.client import ClientRepository
 from controllers.permissions import Permissions
 from views.menu import Menu
 from views.get_datas import GetDatas
-from CONFIG import SESSION
+from settings import SESSION
 
 class CrudManager:
 

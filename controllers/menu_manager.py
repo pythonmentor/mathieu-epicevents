@@ -8,7 +8,7 @@ from views.messages import Messages
 from models.client import Client, ClientRepository
 from models.staff import Staff, StaffRepository
 from views.display import Display
-from CONFIG import SESSION, SECRET
+from settings import SESSION, SECRET
 from controllers.permissions import Permissions
 from controllers.crud_manager import CrudManager
 
@@ -71,7 +71,7 @@ class MenuManager:
     def manager_menu_read_only(self, table):
         print("read_only")
         option = self.menu.view_menu_read_only(table)
-        if self.permissions.check_token_validity():
+        if self.permissions.check_token_validity(self.token):
             client_repository = ClientRepository()
             if option == 1:
                 query = client_repository.get_all()

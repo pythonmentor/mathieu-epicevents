@@ -1,6 +1,6 @@
 import jwt
 from sqlalchemy import Column, Integer, String, func, ForeignKey, Table, Enum, update, text, insert
-from CONFIG import SECRET, SESSION, ENGINE
+from settings import SECRET, SESSION, ENGINE
 from views.login import ViewLogin
 from views.messages import Messages
 

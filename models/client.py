@@ -1,21 +1,16 @@
 from __future__ import annotations
-import typing
+
 from typing import List
 import enum
 from datetime import date
 from sqlalchemy import Column, Integer, String, func, ForeignKey, Table, Enum, update, text, insert
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from CONFIG import SESSION, ENGINE
-from models.staff import Staff
-from models.contract import Contract
-from models.event import Event
+from sqlalchemy.orm import  Mapped, mapped_column, relationship
+from settings import Base, SESSION, ENGINE
+#from models.staff import Staff
+#from models.contract import Contract
+#from models.event import Event
 
 
-class Base(DeclarativeBase):
-    type_annotation_map = {
-        enum.Enum: Enum(enum.Enum),
-        typing.Literal: Enum(enum.Enum),
-    }
 
 
 class Client(Base):
@@ -27,10 +22,13 @@ class Client(Base):
     name_company : Mapped[str] = mapped_column(String(300))
     date_creation : Mapped[date] = mapped_column(insert_default=func.now())
     date_update : Mapped[date] = mapped_column(insert_default=func.now())
-    contact_commercial_id: Mapped[int] = mapped_column(ForeignKey("staff.id"))
-    contact_commercial_id: Mapped[List["Staff"]] = relationship(back_populates="client")
-    contracts: Mapped[List["Contract"]] = relationship(back_populates="contract")
-    events: Mapped[List["Event"]] = relationship()
+
+    commercial_contact_id = mapped_column(ForeignKey("staff.id"))
+    commercial_contact: Mapped[Staff] = relationship(back_populates="clients")
+    
+
+    contracts: Mapped[List["Contract"]] = relationship(back_populates="client")
+    events: Mapped[List["Event"]] = relationship(back_populates="client")
     
     def __repr__(self) -> str:
         return f"Client(id={self.id}, fullname={self.fullname})"
@@ -39,21 +37,16 @@ class Client(Base):
 class ClientRepository:
 
     def find_by_fullname(self, fullname):
-        return SESSION.query(Client).filter(Client.fullname==f'{fullname}').first()
-        
-        #with ENGINE.connect() as conn:
-            #result = conn.execute(text(f"SELECT * FROM client WHERE fullname = '{fullname}'"))
-        #return result
+        return SESSION.query(Client).filter(Client.fullname==fullname).first()
     
     
     def find_by_id(self, id) :
-        with ENGINE.connect() as conn:
-            result = conn.execute(text(f"SELECT * FROM client WHERE id = {id}"))
-        return result
+        return SESSION.query(Client).filter(Client.id==id).first()
+    
     
     @classmethod
-    def find_by_email(cls, session, email) :
-        return session.query(cls).filter_by(email=email).all()
+    def find_by_email(cls, email) :
+        return SESSION.query(cls).filter_by(email=email).all()
     
     
     def get_all(self) :

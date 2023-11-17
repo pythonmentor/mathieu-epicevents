@@ -5,22 +5,27 @@ from typing import List, Optional
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 #from main import Event
+from settings import Base
+from models.client import Client
+from models.staff import Staff
 
 
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 class Contract(Base):
     
     __tablename__ = 'contract'
     id: Mapped[int] = mapped_column(primary_key=True)
-    client_id: Mapped[int] = mapped_column(ForeignKey("client.id"))
-    commercial_contact_id : Mapped[int] = mapped_column(ForeignKey("staff.id"))
-    commercial_contact_id = relationship('Staff')
+
+    client_id = mapped_column(ForeignKey("client.id"))
+    client: Mapped[Client] = relationship(back_populates="contracts")
+
+
+    commercial_contact_id = mapped_column(ForeignKey("staff.id"))
+    commercial_contact: Mapped[Staff] = relationship(back_populates="contracts")
+
     event: Mapped["Event"] = relationship(back_populates="contract")
+    
     total_amount : Mapped[int]
     balace_due : Mapped[int]
     date_creation : Mapped[date] = mapped_column(insert_default=func.now())
