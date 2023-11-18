@@ -1,7 +1,6 @@
 import jwt
-from sqlalchemy import Column, Integer, String, func, ForeignKey, Table, Enum, update, text, insert
-from settings import SECRET, SESSION, ENGINE
-from views.login import ViewLogin
+from sqlalchemy import text
+from settings import SECRET, ENGINE
 from views.messages import Messages
 
 class Permissions:
@@ -41,10 +40,8 @@ class Permissions:
         else:
             return False
                     
-
-
     def is_own_client(self, staff_id, client_id):
-
+        
         with ENGINE.connect() as conn:
             result = conn.execute(text(f"SELECT * FROM client JOIN staff ON client.contact_commercial_id = staff.id WHERE staff.id = {staff_id};"))
         for row in result:

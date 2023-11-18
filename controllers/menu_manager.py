@@ -1,14 +1,9 @@
-import configparser
-import jwt
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
 from views.menu import Menu
 from views.get_datas import GetDatas
 from views.messages import Messages
-from models.client import Client, ClientRepository
-from models.staff import Staff, StaffRepository
+from models import models
 from views.display import Display
-from settings import SESSION, SECRET
+from settings import SESSION
 from controllers.permissions import Permissions
 from controllers.crud_manager import CrudManager
 
@@ -40,6 +35,7 @@ class MenuManager:
         elif option == 4:
             self.choice_menu_staff("staff")
         elif option == 5:
+            SESSION.close()
             exit()
 
     def choice_submenu(self, table):
@@ -51,6 +47,7 @@ class MenuManager:
             return self.choice_main_menu()
         elif option == 2:
             if self.crud.create(table):
+                print("menumanager")
                 self.messages.messages_ok(table, 1)
                 return self.choice_main_menu()
         elif option == 3:
@@ -72,20 +69,20 @@ class MenuManager:
         print("read_only")
         option = self.menu.view_menu_read_only(table)
         if self.permissions.check_token_validity(self.token):
-            client_repository = ClientRepository()
+            client_repository = models.ClientRepository()
             if option == 1:
                 query = client_repository.get_all()
                 self.display.display_all_table(query)
                 
             if option == 2:
                 fullname = self.get_datas.get_fullname()
-                client_repository = ClientRepository()
+                client_repository = models.ClientRepository()
                 query = client_repository.find_by_fullname(fullname)
                 self.display.display_one_object(query)
                 
             if option == 3:
                 id = self.get_datas.get_id()
-                client_repository = ClientRepository()
+                client_repository = models.ClientRepository()
                 query = client_repository.find_by_id(id)
                 self.display.display_one_object(query)
             

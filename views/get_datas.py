@@ -19,7 +19,7 @@ class GetDatas:
     def get_create_datas(self, table):
         if table == 'client':
             print("Veuillez taper les données suivantes.")
-            fullname = input("Fullname : ")
+            fullname = self.get_fullname()
             email = input("Email : ")
             phone = input("Phone : ")
             name_company = input("Name company : ")
