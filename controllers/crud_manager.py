@@ -34,7 +34,8 @@ class CrudManager:
                 new_value = self.get_datas.get_new_value()
                 if column_to_update == "phone":
                     new_value = int(new_value)
-                return client_repository.update(client.id, column_to_update, new_value)
+                client_repository.update(client.id, column_to_update, new_value)
+                return True
             else:
                 return False
 

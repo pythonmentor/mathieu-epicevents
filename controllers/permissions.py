@@ -1,7 +1,8 @@
 import jwt
 from sqlalchemy import text
-from settings import SECRET, ENGINE
+from settings import SECRET, SESSION
 from views.messages import Messages
+from models.models import Staff
 
 class Permissions:
 
@@ -35,17 +36,18 @@ class Permissions:
             department = token_decode['department']
             print("department : ", department)
             if table == "client":
-                print (department == "commercial" and self.is_own_client(staff_id, client_id,))
+                print ("permission : ", department == "commercial" and self.is_own_client(staff_id, client_id,))
                 return department == "commercial" and self.is_own_client(staff_id, client_id,)
         else:
             return False
                     
     def is_own_client(self, staff_id, client_id):
-        
-        with ENGINE.connect() as conn:
-            result = conn.execute(text(f"SELECT * FROM client JOIN staff ON client.contact_commercial_id = staff.id WHERE staff.id = {staff_id};"))
-        for row in result:
-            return client_id == row[0]
+        staff_member = SESSION.get(Staff, staff_id)
+        clients = staff_member.clients
+        for client in clients:
+            if client.id == client_id:
+                return True
+        return False
         
                 
 
