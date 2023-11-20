@@ -13,7 +13,12 @@ class Menu:
 
         print()
         while True:
-            menu_options = {1: "Clients", 2: "Evènements", 3: "Contrats", 4: "collaborateurs: ", 5: "Fermer"}
+            menu_options = {
+                1: "Clients",
+                2: "Evènements",
+                3: "Contrats",
+                4: "collaborateurs: ", 5: "Fermer"
+            }
             print("****Menu principal****")
             print()
             for key in menu_options:
@@ -27,16 +32,16 @@ class Menu:
                 self.clean()
                 print()
             else:
-                for key in menu_options:
-                    if option == key:
-                        self.clean()
-                        return option
-                print("Option invalide. Merci d'entrer un nombre entre 1 et 5")
-                time.sleep(2)
-                self.clean()
-                print()
-
-   
+                if option < 1 or option > 5:
+                    print("Vous devez taper un nombre entre 1 et 5.")
+                    time.sleep(2)
+                    self.clean()
+                    print()
+                else:
+                    self.clean()
+                    return option
+                
+                       
     def submenu(self, table):
         """
         Affiche le sous menu (client ou contrat ou évenènement ou collaborateur)
@@ -52,8 +57,7 @@ class Menu:
                 3: "Modifier",
                 4: "Supprimer un compte collaborateur",
                 5: "Retour au menu principal",
-                6: "Fermer",
-               
+                6: "Fermer",           
             }
             for key in menu_options:
                 print(key, "--", menu_options[key])
@@ -66,15 +70,14 @@ class Menu:
                 self.clean()
                 print()
             else:
-                for key in menu_options:
-                    if option == key:
-                        self.clean()
-                        return option
-                print()
-                print("Option invalide. Merci d'entrer un nombre entre 1 et 6")
-                time.sleep(2)
-                self.clean()
-                print()
+                if option < 1 or option > 6:
+                    print("Vous devez taper un nombre entre 1 et 6.")
+                    time.sleep(2)
+                    self.clean()
+                    print()
+                else:
+                    self.clean()
+                    return option
 
     
     def view_menu_read_only(self,name_submenu):
@@ -99,12 +102,20 @@ class Menu:
                 print()
             try:
                 option = int(input("Entrer votre choix : "))
-                return option
             except ValueError:
                 print("Vous devez taper un nombre entre 1 et 5.")
                 time.sleep(2)
                 self.clean()
                 print()
+            else:
+                if option < 1 or option > 5:
+                    print("Vous devez taper un nombre entre 1 et 5.")
+                    time.sleep(2)
+                    self.clean()
+                    print()
+                else:
+                    self.clean()
+                    return option
 
     def choice_column_to_update_client(self):
         while True:
@@ -125,14 +136,22 @@ class Menu:
                 print()
             try:
                 number_column_to_update = int(input("Entrer votre choix : "))
-                return list_of_editable_update_columns[number_column_to_update]
+                
             except ValueError:
                 print("Vous devez taper un nombre entre 1 et 6.")
                 time.sleep(2)
                 self.clean()
                 print()
+            else:
+                if number_column_to_update < 1 or number_column_to_update > 5:
+                    print("Vous devez taper un nombre entre 1 et 5.")
+                    time.sleep(2)
+                    self.clean()
+                    print()
+                else:
+                    self.clean()
+                    return list_of_editable_update_columns[number_column_to_update]
 
-          
 
     def clean(self):
         """Fonction qui efface l'affichage de la console"""

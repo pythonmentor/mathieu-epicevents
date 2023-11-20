@@ -1,13 +1,12 @@
 import jwt
-from sqlalchemy import text
 from settings import SECRET, SESSION
 from views.messages import Messages
 from models.models import Staff
 
-class Permissions:
 
+class Permissions:
     def __init__(self):
-        self.messages=Messages()
+        self.messages = Messages()
 
     def check_token_validity(self, token):
         try:
@@ -15,11 +14,11 @@ class Permissions:
         except jwt.ExpiredSignatureError:
             self.messages.message_error(message_number=2)
             return False
-        
+
     def permission_create(self, token, table):
         if self.check_token_validity(token):
             token_decode = self.check_token_validity(token)
-            department = token_decode['department']
+            department = token_decode["department"]
             if table == "client":
                 if department == "commercial":
                     return True
@@ -29,18 +28,28 @@ class Permissions:
                     return False
         else:
             return False
-        
-    def permission_update(self, staff_id, client_id, token, table): 
+
+    def permission_update(self, staff_id, client_id, token, table):
         if self.check_token_validity(token):
             token_decode = self.check_token_validity(token)
-            department = token_decode['department']
+            department = token_decode["department"]
             print("department : ", department)
             if table == "client":
-                print ("permission : ", department == "commercial" and self.is_own_client(staff_id, client_id,))
-                return department == "commercial" and self.is_own_client(staff_id, client_id,)
+                print(
+                    "permission : ",
+                    department == "commercial"
+                    and self.is_own_client(
+                        staff_id,
+                        client_id,
+                    ),
+                )
+                return department == "commercial" and self.is_own_client(
+                    staff_id,
+                    client_id,
+                )
         else:
             return False
-                    
+
     def is_own_client(self, staff_id, client_id):
         staff_member = SESSION.get(Staff, staff_id)
         clients = staff_member.clients
@@ -48,11 +57,3 @@ class Permissions:
             if client.id == client_id:
                 return True
         return False
-        
-                
-
-
-
-
-
-

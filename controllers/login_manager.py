@@ -1,12 +1,12 @@
 from argon2 import PasswordHasher
 from settings import password, SECRET, SESSION
-from models.models import Staff
 import jwt
 from datetime import datetime, timedelta
 from controllers.menu_manager import MenuManager
 from views.menu import Menu
 from views.login import ViewLogin
 from views.messages import Messages
+from models.models import Staff
 
 class AuthenticationAndPermissions:
 
