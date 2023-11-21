@@ -16,6 +16,10 @@ class Messages:
                 "'pipenv run python main.py'"
             )
         elif message_number == 3:
-            print(f"Ce {table} est inconnu.")
+            print("Une erreur s'est produite. Le n° de téléphone est peut-être incorrect. Veuillez recommencer.")
+
         elif message_number == 4:
+            print(f"Ce {table} est inconnu.")
+
+        elif message_number == 5:
             print("Vous n'êtes pas autorisé(e) à effectuer cette action.")

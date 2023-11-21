@@ -8,22 +8,24 @@ from views.login import ViewLogin
 from views.messages import Messages
 from models.models import Staff
 
-class AuthenticationAndPermissions:
 
+class AuthenticationAndPermissions:
     def __init__(self):
-        self.menu=Menu()
+        self.menu = Menu()
         self.messages = Messages()
         self.password = password
         self.ph = PasswordHasher()
 
     def create_token(self, department):
-        encoded_jwt = jwt.encode({"exp": datetime.now()+ timedelta(seconds=60), "department": department}, SECRET, algorithm="HS256")
+        encoded_jwt = jwt.encode(
+            {"exp": datetime.now() + timedelta(seconds=60), "department": department}, SECRET, algorithm="HS256"
+        )
         return encoded_jwt
 
     def hash_password(self, password):
-        hash = self.ph.hash(f'{password}')
+        hash = self.ph.hash(f"{password}")
         return hash
-    
+
     def check_password(self):
         login = ViewLogin()
         email = login.get_email()
@@ -31,18 +33,14 @@ class AuthenticationAndPermissions:
         password = login.get_password()
         password_user = self.hash_password(password)
         staff_member = SESSION.query(Staff).filter_by(email=email).first()
-        #print("staff_member: ", staff_member)
-        if staff_member and staff_member.email == email and staff_member.password == password :
-            user_id = staff_member.id
+        # print("staff_member: ", staff_member)
+        if staff_member and staff_member.email == email and staff_member.password == password:
             department = staff_member.department.value
             token = self.create_token(department)
-            menu_manager = MenuManager(user_id, token)
+            menu_manager = MenuManager(staff_member, token)
             print("token :", token)
             return menu_manager.choice_main_menu()
-            
+
         else:
             self.messages.message_error(1)
             return self.check_password()
-        
-
-    

@@ -19,34 +19,25 @@ class Permissions:
         if self.check_token_validity(token):
             token_decode = self.check_token_validity(token)
             department = token_decode["department"]
-            if table == "client":
+            if table == "client" or table == "event":
                 if department == "commercial":
                     return True
-                elif department == "support":
-                    return False
-                elif department == "gestion":
+                else:
                     return False
         else:
             return False
 
-    def permission_update(self, staff_id, client_id, token, table):
+    def permission_update(self, staff_id, object_id, token, table):
         if self.check_token_validity(token):
             token_decode = self.check_token_validity(token)
             department = token_decode["department"]
             print("department : ", department)
             if table == "client":
-                print(
-                    "permission : ",
-                    department == "commercial"
-                    and self.is_own_client(
-                        staff_id,
-                        client_id,
-                    ),
-                )
-                return department == "commercial" and self.is_own_client(
-                    staff_id,
-                    client_id,
-                )
+                return department == "commercial" and self.is_own_client(staff_id, object_id)
+            elif table == "event" and department == "support":
+                return self.is_their_event(staff_id, object_id)
+            elif table == "event" and department == "management":
+                return True
         else:
             return False
 
@@ -55,5 +46,13 @@ class Permissions:
         clients = staff_member.clients
         for client in clients:
             if client.id == client_id:
+                return True
+        return False
+
+    def is_their_event(self, staff_id, event_id):
+        staff_member = SESSION.get(Staff, staff_id)
+        events = staff_member.events
+        for event in events:
+            if event.id == event_id:
                 return True
         return False
