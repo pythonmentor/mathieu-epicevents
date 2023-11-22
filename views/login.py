@@ -1,23 +1,20 @@
 import os
 import platform
 
-class ViewLogin:
 
+class ViewLogin:
     def get_email(self):
-        #self.clean()
+        # self.clean()
         print("Veuillez taper vos identifiants.")
         print()
         email = input("Email : ")
         print()
         return email
-        
-    
+
     def get_password(self):
         print()
         password = input("Password : ")
         return password
-    
-    
 
     def clean(self):
         """Fonction qui efface l'affichage de la console"""
@@ -25,9 +22,3 @@ class ViewLogin:
             os.system("cls")
         elif platform.system() == "Linux":
             os.system("clear")
-         
-
-
-
-
-      

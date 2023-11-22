@@ -44,10 +44,8 @@ class MenuManager:
 
         if option == 1:
             if self.crud.read(table):
-                print("ici")
                 return self.choice_main_menu()
             else:
-                print("c la")
                 self.messages.message_error(table, 3)
                 return self.choice_main_menu()
 

@@ -48,9 +48,9 @@ class Menu:
                 1: "Consulter",
                 2: "Créer",
                 3: "Modifier",
-                4: "Supprimer un compte collaborateur",
-                5: "Retour au menu principal",
-                6: "Fermer",
+                # 4: "Supprimer un compte collaborateur",
+                4: "Retour au menu principal",
+                5: "Fermer",
             }
             for key in menu_options:
                 print(key, "--", menu_options[key])
@@ -58,13 +58,13 @@ class Menu:
             try:
                 option = int(input("Entrer votre choix : "))
             except ValueError:
-                print("Vous devez taper un nombre entre 1 et 6.")
+                print("Vous devez taper un nombre entre 1 et 5.")
                 time.sleep(2)
                 self.clean()
                 print()
             else:
-                if option < 1 or option > 6:
-                    print("Vous devez taper un nombre entre 1 et 6.")
+                if option < 1 or option > 5:
+                    print("Vous devez taper un nombre entre 1 et 5.")
                     time.sleep(2)
                     self.clean()
                     print()
@@ -98,6 +98,15 @@ class Menu:
                     5: "Retour au menu principal",
                     6: "Fermer",
                 }
+            if table == "contract":
+                menu_options = {
+                    1: "Afficher tous les contrats",
+                    2: "Trouver un contrat avec le n° (id) du client",
+                    3: "Trouver un contrat par son numéro (id)",
+                    4: "Trouver un contrat avec le nom de l'évènement",
+                    5: "Retour au menu principal",
+                    6: "Fermer",
+                }
             for key in menu_options:
                 print(key, "--", menu_options[key])
                 print()
@@ -118,19 +127,36 @@ class Menu:
                     self.clean()
                     return option
 
-    def choice_column_to_update_client(self):
+    def choice_column_to_update(self, table):
         while True:
             print()
-            print(f"*****Modifier un compte client*****")
-            print("Liste des champs modifiables : ")
-            list_of_editable_update_columns = {
-                1: "fullname",
-                2: "email",
-                3: "phone",
-                4: "name_company",
-                5: "Retour au menu principal",
-                6: "Fermer",
-            }
+            if table == "client":
+                print("*****Modifier un compte client*****")
+                print("Liste des champs modifiables : ")
+                list_of_editable_update_columns = {
+                    1: "fullname",
+                    2: "email",
+                    3: "phone",
+                    4: "name_company",
+                    5: "Retour au menu principal",
+                    6: "Fermer",
+                }
+            if table == "event":
+                print("*****Modifier un évènement*****")
+                print("Liste des champs modifiables : ")
+                list_of_editable_update_columns = {
+                    1: "name",
+                    2: "contract_id",
+                    3: "client_id",
+                    4: "support_contact_id",
+                    5: "event_date_start",
+                    6: "event_date_end",
+                    7: "location",
+                    8: "attendees",
+                    9: "notes",
+                    10: "Retour au menu principal",
+                    11: "Fermer",
+                }
             for key in list_of_editable_update_columns:
                 print(key, "--", list_of_editable_update_columns[key])
                 print()
@@ -138,13 +164,13 @@ class Menu:
                 number_column_to_update = int(input("Entrer votre choix : "))
 
             except ValueError:
-                print("Vous devez taper un nombre entre 1 et 6.")
+                print(f"Vous devez taper un nombre entre 1 et {len(list_of_editable_update_columns)}.")
                 time.sleep(2)
                 self.clean()
                 print()
             else:
-                if number_column_to_update < 1 or number_column_to_update > 5:
-                    print("Vous devez taper un nombre entre 1 et 5.")
+                if number_column_to_update < 1 or number_column_to_update > len(list_of_editable_update_columns):
+                    print(f"Vous devez taper un nombre entre 1 et {len(list_of_editable_update_columns)}.")
                     time.sleep(2)
                     self.clean()
                     print()

@@ -24,6 +24,10 @@ class Permissions:
                     return True
                 else:
                     return False
+            elif table == "contract" and department == "management":
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -36,8 +40,12 @@ class Permissions:
                 return department == "commercial" and self.is_own_client(staff_id, object_id)
             elif table == "event" and department == "support":
                 return self.is_their_event(staff_id, object_id)
-            elif table == "event" and department == "management":
+            elif (table == "event" or table == "contract") and department == "management":
                 return True
+            elif table == "contract" and department == "commercial" and self.is_own_client(staff_id, object_id):
+                return True
+            else:
+                return False
         else:
             return False
 

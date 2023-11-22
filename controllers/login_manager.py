@@ -42,5 +42,5 @@ class AuthenticationAndPermissions:
             return menu_manager.choice_main_menu()
 
         else:
-            self.messages.message_error(1)
+            self.messages.message_error(None, 1)
             return self.check_password()
