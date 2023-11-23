@@ -89,7 +89,7 @@ class Menu:
                     4: "Retour au menu principal",
                     5: "Fermer",
                 }
-            if table == "event":
+            elif table == "event":
                 menu_options = {
                     1: "Afficher tous les évènements",
                     2: "Trouver un évènement par son nom",
@@ -98,12 +98,21 @@ class Menu:
                     5: "Retour au menu principal",
                     6: "Fermer",
                 }
-            if table == "contract":
+            elif table == "contract":
                 menu_options = {
                     1: "Afficher tous les contrats",
                     2: "Trouver un contrat avec le n° (id) du client",
                     3: "Trouver un contrat par son numéro (id)",
                     4: "Trouver un contrat avec le nom de l'évènement",
+                    5: "Retour au menu principal",
+                    6: "Fermer",
+                }
+            elif table == "staff":
+                menu_options = {
+                    1: "Afficher tous les collaborateurs",
+                    2: "Trouver un colloaborateur avec son n° (id)",
+                    3: "Trouver un collaborateur avec son nom et prénom",
+                    4: "Trouver un collaborateur avec son email",
                     5: "Retour au menu principal",
                     6: "Fermer",
                 }
@@ -141,7 +150,7 @@ class Menu:
                     5: "Retour au menu principal",
                     6: "Fermer",
                 }
-            if table == "event":
+            elif table == "event":
                 print("*****Modifier un évènement*****")
                 print("Liste des champs modifiables : ")
                 list_of_editable_update_columns = {
@@ -157,6 +166,16 @@ class Menu:
                     10: "Retour au menu principal",
                     11: "Fermer",
                 }
+            elif table == "contract":
+                print("*****Modifier un contrat*****")
+                print("Liste des champs modifiables : ")
+                list_of_editable_update_columns = {
+                    1: "client_id",
+                    2: "total_amount",
+                    3: "balance_due",
+                    4: "status",
+                }
+
             for key in list_of_editable_update_columns:
                 print(key, "--", list_of_editable_update_columns[key])
                 print()

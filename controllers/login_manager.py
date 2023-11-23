@@ -1,10 +1,10 @@
-from argon2 import PasswordHasher
-from settings import password, SECRET, SESSION
+from passlib.hash import argon2
+from settings import SECRET, SESSION
 import jwt
 from datetime import datetime, timedelta
 from controllers.menu_manager import MenuManager
 from views.menu import Menu
-from views.login import ViewLogin
+from views.get_datas import GetDatas
 from views.messages import Messages
 from models.models import Staff
 
@@ -13,8 +13,7 @@ class AuthenticationAndPermissions:
     def __init__(self):
         self.menu = Menu()
         self.messages = Messages()
-        self.password = password
-        self.ph = PasswordHasher()
+        self.get_datas = GetDatas()
 
     def create_token(self, department):
         encoded_jwt = jwt.encode(
@@ -22,25 +21,16 @@ class AuthenticationAndPermissions:
         )
         return encoded_jwt
 
-    def hash_password(self, password):
-        hash = self.ph.hash(f"{password}")
-        return hash
-
     def check_password(self):
-        login = ViewLogin()
-        email = login.get_email()
-        print(email)
-        password = login.get_password()
-        password_user = self.hash_password(password)
-        staff_member = SESSION.query(Staff).filter_by(email=email).first()
-        # print("staff_member: ", staff_member)
-        if staff_member and staff_member.email == email and staff_member.password == password:
-            department = staff_member.department.value
-            token = self.create_token(department)
-            menu_manager = MenuManager(staff_member, token)
-            print("token :", token)
-            return menu_manager.choice_main_menu()
-
-        else:
-            self.messages.message_error(None, 1)
-            return self.check_password()
+        email, password = self.get_datas.get_credentials()
+        staff_user = SESSION.query(Staff).filter(Staff.email == email).one_or_none()
+        if staff_user is not None:
+            password_user_hashed = staff_user.password
+            if argon2.verify(password, password_user_hashed):
+                department = staff_user.department.name
+                token = self.create_token(department)
+                menu_manager = MenuManager(staff_user, token)
+                print("token :", token)
+                return menu_manager.choice_main_menu()
+        self.messages.message_error(None, 1)
+        return self.check_password()

@@ -1,10 +1,34 @@
+import os
+import platform
 import re
+from passlib.hash import argon2
 from views.menu import Menu
+from models.models import Department
 
 
 class GetDatas:
     def __init__(self):
         self.menu = Menu()
+
+    def get_credentials(self):
+        self.clean()
+        print("Veuillez taper vos identifiants.")
+        print()
+        email = input("Email : ")
+        password = input("Mot de passe : ")
+        return email, password
+
+    def get_id(self, table):
+        if table == "client":
+            id_str = input("N° (id) du client :")
+        elif table == "event":
+            id_str = input("N° (id) de l'évènement :")
+        elif table == "contract":
+            id_str = input("N° (id) du contrat :")
+        elif table == "staff":
+            id_str = input("N° (id) du collaborateur :")
+        id = self.chek_id(id_str)
+        return id
 
     def get_fullname(self):
         print("Veuillez taper le nom complet du client.")
@@ -18,13 +42,42 @@ class GetDatas:
         name_event = input("Nom : ").capitalize()
         return name_event
 
-    def get_id(self, table):
-        if table == "client":
-            id_str = input("N° (id) du client :")
-        elif table == "event":
-            id_str = input("N° (id) de l'évènement :")
-        id = self.chek_id(id_str)
-        return id
+    def get_name_and_first_name_staff(self):
+        print("Veuillez taper le nom et le prénom du collaborateur.")
+        name = input("Nom : ").capitalize()
+        firstname = input("prénom : ").capitalize()
+        return name, firstname
+
+    def get_email(self):
+        email = input("Veuillez taper l'email : ")
+        email = self.chek_email(email)
+        return email
+
+    def hash_password(self, password):
+        hash = argon2.hash(f"{password}")
+        return hash
+
+    def get_password(self):
+        password = input(
+            "Veuillez taper un mot de passe : "
+            "- formé d'un minimum de 8 caractères,"
+            "- au moins une lettre majuscule,"
+            "- au moins une lettre minuscule,"
+            "- au moins un chiffre,"
+            "- au moins un caractère spécial."
+        )
+        while re.fullmatch(r"/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/", password) is None:
+            print("Veuillez taper un email valide. Exemple : alice@gmail.com")
+            password = input(
+                "Veuillez taper un mot de passe : "
+                "- formé d'un minimum de 8 caractères,"
+                "- au moins une lettre majuscule,"
+                "- au moins une lettre minuscule,"
+                "- au moins un chiffre,"
+                "- au moins un caractère spécial."
+            )
+        password_hashed = self.hash_password(password)
+        return password_hashed
 
     def get_create_datas(self, table):
         if table == "client":
@@ -76,6 +129,15 @@ class GetDatas:
             }
             return datas
 
+        elif table == "staff":
+            print("Veuillez taper les données suivantes.")
+            name, first_name = self.get_name_and_first_name_staff()
+            email = self.get_email()
+            password_hashed = self.get_password()
+            department = self.get_department()
+            datas = {"name": name, "email": email, "password": password_hashed, "department ": department}
+            return datas
+
     def get_datetime(self):
         year = input("année (ex : 2023) : ")
         month = input("mois (ex : 01): ")
@@ -112,10 +174,10 @@ class GetDatas:
         while re.fullmatch(r"[1-2]", status_input) is None:
             print()
             status_input = input("Contrat signé? Merci de taper 1 pour OUI ou 2 pour NON : ")
-            if status_input == 1:
-                return "true"
-            elif status_input == 2:
-                return "false"
+        if status_input == "1":
+            return True
+        elif status_input == "2":
+            return False
 
     def get_new_value(self, column):
         new_value = input("Veuillez entrer la nouvelle valeur : ")
@@ -131,3 +193,18 @@ class GetDatas:
     def get_support_contact(self):
         support_contact = input("Veuillez taper le nom ou l'id du collaborateur support de l'évènement")
         return support_contact
+
+    def clean(self):
+        """Fonction qui efface l'affichage de la console"""
+        if platform.system() == "Windows":
+            os.system("cls")
+        elif platform.system() == "Linux":
+            os.system("clear")
+
+    def get_department(self):
+        print("Liste des départements : ")
+        for department in Department:
+            print(f"{department.name} : {department.value}")
+        department_number = input("Veuillez entrer le n° du département choisi : ")
+        department = Department(int(department_number))
+        return department.name

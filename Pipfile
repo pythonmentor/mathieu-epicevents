@@ -11,6 +11,7 @@ pytest = "*"
 pytest-mock = "*"
 pyjwt = {extras = ["crypto"], version = "*"}
 cryptography = "*"
+passlib = "*"
 
 [dev-packages]
 

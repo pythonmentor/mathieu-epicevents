@@ -7,9 +7,9 @@ from settings import Base
 
 
 class Department(enum.Enum):
-    COMMERCIAL = "commercial"
-    SUPPORT = "support"
-    MANAGEMENT = "management"
+    COMMERCIAL = 1
+    SUPPORT = 2
+    MANAGEMENT = 3
 
 
 class Staff(Base):
@@ -18,7 +18,7 @@ class Staff(Base):
     name: Mapped[str] = mapped_column(String(100))
     first_name: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(String(300))
-    password: Mapped[str] = mapped_column(String(50))
+    password: Mapped[str] = mapped_column(String(500))
     department: Mapped[Department]
 
     clients: Mapped[List["Client"]] = relationship(back_populates="commercial_contact", lazy="selectin")
@@ -52,8 +52,9 @@ class Client(Base):
 
         return (
             f"Client(id:{self.id}, fullname : {self.fullname}, email : {self.email}, phone : {self.phone},"
-            f"name_company : {self.name_company!r}, date_creation : {self.date_creation!r}, date_update : {self.date_update!r},"
-            f" commercial_contact_id : {self.commercial_contact.name!r})"
+            f"name_company : {self.name_company!r}, date_creation : {self.date_creation!r},"
+            f"date_update : {self.date_update!r},"
+            f"commercial_contact_id : {self.commercial_contact.name!r})"
         )
 
 
@@ -110,12 +111,3 @@ class Contract(Base):
 
     def __repr__(self) -> str:
         return f"Contract(id={self.id!r}, client.fullname={self.client.fullname!r}), event={self.event!r})"
-
-
-"""
-rappel : contact_commercial : FK (= le commercial associé au
-client) ;
-
-statut (= si le contrat a été signé) : boolean
-
-"""

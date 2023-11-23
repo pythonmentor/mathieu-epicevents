@@ -20,15 +20,20 @@ class Permissions:
             token_decode = self.check_token_validity(token)
             department = token_decode["department"]
             if table == "client" or table == "event":
-                if department == "commercial":
+                if department == "COMMERCIAL":
                     return True
                 else:
                     return False
-            elif table == "contract" and department == "management":
+            
+            elif (table == "contract" or table == "staff") and department == "MANAGEMENT":
+                print("table :", table, "department :", department)
                 return True
             else:
+                print("table :", table, "department :", department)
+                print("1111111")
                 return False
         else:
+            print("22222222222")
             return False
 
     def permission_update(self, staff_id, object_id, token, table):
@@ -37,12 +42,16 @@ class Permissions:
             department = token_decode["department"]
             print("department : ", department)
             if table == "client":
-                return department == "commercial" and self.is_own_client(staff_id, object_id)
-            elif table == "event" and department == "support":
-                return self.is_their_event(staff_id, object_id)
-            elif (table == "event" or table == "contract") and department == "management":
+                return department == "COMMERCIAL" and self.is_own_client(staff_id, object_id)
+            elif table == "event" and department == "SUPPORT":
+                return self.is_their_event(staff_id, event_id=object_id)
+            elif (table == "event" or table == "contract" or table == "staff") and department == "MANAGEMENT":
                 return True
-            elif table == "contract" and department == "commercial" and self.is_own_client(staff_id, object_id):
+            elif (
+                table == "contract"
+                and department == "COMMERCIAL"
+                and self.is_own_client(staff_id, client_id=object_id)
+            ):
                 return True
             else:
                 return False
@@ -50,16 +59,16 @@ class Permissions:
             return False
 
     def is_own_client(self, staff_id, client_id):
-        staff_member = SESSION.get(Staff, staff_id)
-        clients = staff_member.clients
+        staff = SESSION.get(Staff, staff_id)
+        clients = staff.clients
         for client in clients:
             if client.id == client_id:
                 return True
         return False
 
     def is_their_event(self, staff_id, event_id):
-        staff_member = SESSION.get(Staff, staff_id)
-        events = staff_member.events
+        staff = SESSION.get(Staff, staff_id)
+        events = staff.events
         for event in events:
             if event.id == event_id:
                 return True

@@ -26,7 +26,6 @@ class ClientRepository:
             name_company=datas["name_company"],
             commercial_contact_id=staff_id,
         )
-        # client.commercial_contact = staff_id
         # session.merge(client)
         session.add(client)
         SESSION.commit()
@@ -97,7 +96,7 @@ class EventRepository:
 
 class ContractRepository:
     def find_by_id(self, id):
-        return SESSION.query(Contract).filter(Event.id == id).first()
+        return SESSION.query(Contract).filter(Contract.id == id).first()
 
     def find_by_client(self, client_id):
         return SESSION.query(Contract).filter_by(client_id=client_id).all()
@@ -137,12 +136,30 @@ class ContractRepository:
 
 
 class StaffRepository:
-    def find_by_name(self, name):
-        return SESSION.query(Staff).filter(Event.name == name).first()
 
+    def get_all(self):
+        return SESSION.query(Staff).all()
+    
+    def find_by_id(self, id):
+        return SESSION.query(Staff).filter(Staff.id == id).first()
 
-"""
-    def delete(self, client):
-        SESSION.delete(client)
+    def find_by_name_and_firstname(self, name, first_name):
+        return SESSION.query(Staff).filter((Staff.name == name) & (Staff.first_name == first_name)).one_or_none()
+
+    def find_by_email(self, email):
+        return SESSION.query(Staff).filter_by(email=email).all()
+
+    def create_staff(self, session, datas):
+        staff = Staff(
+            name=datas["name"],
+            firstname=datas["firstname"],
+            email=datas["email"],
+            password=datas["passsword"],
+            dpartment=datas["department"],
+        )
+        session.add(staff)
         SESSION.commit()
-"""
+
+    def delete_staff(self, staff):
+        SESSION.delete(staff)
+        SESSION.commit()

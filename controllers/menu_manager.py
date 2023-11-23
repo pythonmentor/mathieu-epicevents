@@ -5,19 +5,18 @@ from views.display import Display
 from settings import SESSION
 from controllers.permissions import Permissions
 from controllers.crud_manager import CrudManager
-from models import repository
 
 
 class MenuManager:
-    def __init__(self, staff_member, token):
+    def __init__(self, staff_user, token):
         self.token = token
         self.menu = Menu()
         self.messages = Messages()
         self.display = Display()
         self.get_datas = GetDatas()
         self.permissions = Permissions()
-        self.crud = CrudManager(staff_member, token)
-        self.staff_id = staff_member
+        self.crud = CrudManager(staff_user, token)
+        self.staff_id = staff_user
 
     def choice_main_menu(self):
         """
@@ -49,17 +48,16 @@ class MenuManager:
                 self.messages.message_error(table, 3)
                 return self.choice_main_menu()
 
-        elif option == 2:
-            if self.crud.create(table):
+        elif option == 2 or option == 3:
+            if option == 2:
+                return_of_order = self.crud.create(table)
+            elif option == 3:
+                return_of_order = self.crud.update(table)
+
+            if return_of_order == "creation_ok":
                 self.messages.messages_ok(table, 1)
                 return self.choice_main_menu()
-            else:
-                self.messages.message_error(table, 3)
-                return self.choice_main_menu()
-
-        elif option == 3:
-            return_of_order = self.crud.update(table)
-            if return_of_order == "update_ok":
+            elif return_of_order == "update_ok":
                 self.messages.messages_ok(table, 2)
                 return self.choice_main_menu()
             elif return_of_order == "unknown_client":
