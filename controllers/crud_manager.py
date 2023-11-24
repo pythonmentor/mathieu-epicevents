@@ -3,7 +3,6 @@ from controllers.permissions import Permissions
 from views.menu import Menu
 from views.display import Display
 from views.get_datas import GetDatas
-from settings import SESSION
 
 
 class CrudManager:
@@ -22,7 +21,7 @@ class CrudManager:
             if table == "client":
                 client_repository = repository.ClientRepository()
                 try:
-                    client_repository.create_client(SESSION, datas, self.staff_user.id)
+                    client_repository.create_client(datas, self.staff_user.id)
                     return "creation_ok"
                 except:
                     return False
@@ -34,7 +33,7 @@ class CrudManager:
                 if client is not None and self.permissions.is_own_client(self.staff_user.id, client.id):
                     event_repository = repository.EventRepository()
                     try:
-                        event_repository.create_event(SESSION, datas, client.id)
+                        event_repository.create_event(datas, client.id)
                         return "creation_ok"
                     except:
                         return "unknown_client"
@@ -42,7 +41,7 @@ class CrudManager:
             elif table == "contract":
                 contract_repository = repository.ContractRepository()
                 try:
-                    contract_repository.create_contract(SESSION, datas)
+                    contract_repository.create_contract(datas)
                     return "creation_ok"
                 except:
                     return "unknown_client"
@@ -50,11 +49,12 @@ class CrudManager:
             elif table == "staff":
                 staff_repository = repository.StaffRepository()
                 try:
-                    staff_repository.create_staff(SESSION, datas)
+                    staff_repository.create_staff(datas)
                     return "creation_ok"
                 except:
+                    print("DATASSSSS: ", datas)
                     print("Except : Erreur ds crudmanager")
-                    return "unknown_client"
+                    return "error"
         print("icccccciiii")
         return "not_allowed"
 
@@ -253,9 +253,9 @@ class CrudManager:
                 return "unknown_client"
 
         elif table == "staff":
-            name = self.get_datas.get_name()
+            name, first_name = self.get_datas.get_name_and_first_name_staff()
             staff_repository = repository.StaffRepository()
-            staff_member = staff_repository.find_by_fullname(name)
+            staff_member = staff_repository.find_by_name_and_firstname(name, first_name)
             if staff_member is not None:
                 if self.permissions.permission_update(self.staff_user.id, staff_member.id, self.token, table):
                     column_to_update = self.menu.choice_column_to_update(table)

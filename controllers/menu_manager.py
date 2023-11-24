@@ -60,6 +60,9 @@ class MenuManager:
             elif return_of_order == "update_ok":
                 self.messages.messages_ok(table, 2)
                 return self.choice_main_menu()
+            elif return_of_order == "error":
+                self.messages.message_error(table, 3)
+                return self.choice_main_menu()
             elif return_of_order == "unknown_client":
                 self.messages.message_error(table, 4)
                 return self.choice_main_menu()

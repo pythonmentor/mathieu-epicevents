@@ -18,7 +18,7 @@ class ClientRepository:
             result = conn.execute(text("SELECT * FROM client"))
         return result
 
-    def create_client(self, session, datas, staff_id):
+    def create_client(self, datas, staff_id):
         client = Client(
             fullname=datas["fullname"],
             email=datas["email"],
@@ -27,7 +27,7 @@ class ClientRepository:
             commercial_contact_id=staff_id,
         )
         # session.merge(client)
-        session.add(client)
+        SESSION.add(client)
         SESSION.commit()
 
     def update_client(self, client_id, column, new_value):
@@ -56,7 +56,7 @@ class EventRepository:
     def get_all(self):
         return SESSION.query(Event).all()
 
-    def create_event(self, session, datas, client_id):
+    def create_event(self, datas, client_id):
         event = Event(
             name=datas["name"],
             contract_id=datas["contract_id"],
@@ -67,7 +67,7 @@ class EventRepository:
             attendees=datas["attendees"],
             notes=datas["notes"],
         )
-        session.add(event)
+        SESSION.add(event)
         SESSION.commit()
 
     def update_event(self, event_id, column, new_value):
@@ -107,7 +107,7 @@ class ContractRepository:
     def get_all(self):
         return SESSION.query(Contract).all()
 
-    def create_contract(self, session, datas):
+    def create_contract(self, datas):
         client = ClientRepository().find_by_id(datas["client_id"])
         commercial_contact_id = client.commercial_contact_id
         contract = Contract(
@@ -117,7 +117,7 @@ class ContractRepository:
             balance_due=datas["balance_due"],
             status=datas["status"],
         )
-        session.add(contract)
+        SESSION.add(contract)
         SESSION.commit()
 
     def update_contract(self, contract_id, column, new_value):
@@ -136,10 +136,9 @@ class ContractRepository:
 
 
 class StaffRepository:
-
     def get_all(self):
         return SESSION.query(Staff).all()
-    
+
     def find_by_id(self, id):
         return SESSION.query(Staff).filter(Staff.id == id).first()
 
@@ -149,15 +148,27 @@ class StaffRepository:
     def find_by_email(self, email):
         return SESSION.query(Staff).filter_by(email=email).all()
 
-    def create_staff(self, session, datas):
+    def create_staff(self, datas):
         staff = Staff(
             name=datas["name"],
-            firstname=datas["firstname"],
+            first_name=datas["first_name"],
             email=datas["email"],
-            password=datas["passsword"],
-            dpartment=datas["department"],
+            password=datas["password"],
+            department=datas["department"],
         )
-        session.add(staff)
+        SESSION.add(staff)
+        SESSION.commit()
+
+    def update_staff(self, staff_id, column, new_value):
+        staff_member = SESSION.query(Staff).filter_by(id=staff_id).first()
+        if column == "name":
+            staff_member.name = new_value
+        elif column == "first_name":
+            staff_member.first_name = new_value
+        elif column == "email":
+            staff_member.email = new_value
+        elif column == "department":
+            staff_member.department == new_value
         SESSION.commit()
 
     def delete_staff(self, staff):

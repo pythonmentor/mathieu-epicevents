@@ -45,7 +45,7 @@ class GetDatas:
     def get_name_and_first_name_staff(self):
         print("Veuillez taper le nom et le prénom du collaborateur.")
         name = input("Nom : ").capitalize()
-        firstname = input("prénom : ").capitalize()
+        firstname = input("Prénom : ").capitalize()
         return name, firstname
 
     def get_email(self):
@@ -58,24 +58,16 @@ class GetDatas:
         return hash
 
     def get_password(self):
-        password = input(
-            "Veuillez taper un mot de passe : "
-            "- formé d'un minimum de 8 caractères,"
-            "- au moins une lettre majuscule,"
-            "- au moins une lettre minuscule,"
-            "- au moins un chiffre,"
-            "- au moins un caractère spécial."
-        )
-        while re.fullmatch(r"/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/", password) is None:
-            print("Veuillez taper un email valide. Exemple : alice@gmail.com")
-            password = input(
-                "Veuillez taper un mot de passe : "
-                "- formé d'un minimum de 8 caractères,"
-                "- au moins une lettre majuscule,"
-                "- au moins une lettre minuscule,"
-                "- au moins un chiffre,"
-                "- au moins un caractère spécial."
+        password = input("Veuillez créer un mot de passe : ")
+        while re.fullmatch(r"^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$", password) is None:
+            print(
+                "Le mot de passe doit être formé d'un minimum de 8 caractères, "
+                "au moins une lettre majuscule, "
+                "au moins une lettre minuscule, "
+                "au moins un chiffre, "
+                "au moins un caractère spécial."
             )
+            password = input("Mot de passe : ")
         password_hashed = self.hash_password(password)
         return password_hashed
 
@@ -135,7 +127,13 @@ class GetDatas:
             email = self.get_email()
             password_hashed = self.get_password()
             department = self.get_department()
-            datas = {"name": name, "email": email, "password": password_hashed, "department ": department}
+            datas = {
+                "name": name,
+                "first_name": first_name,
+                "email": email,
+                "password": password_hashed,
+                "department": department,
+            }
             return datas
 
     def get_datetime(self):

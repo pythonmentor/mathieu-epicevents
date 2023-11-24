@@ -22,7 +22,8 @@ class AuthenticationAndPermissions:
         return encoded_jwt
 
     def check_password(self):
-        email, password = self.get_datas.get_credentials()
+        get_datas = GetDatas()
+        email, password = get_datas.get_credentials()
         staff_user = SESSION.query(Staff).filter(Staff.email == email).one_or_none()
         if staff_user is not None:
             password_user_hashed = staff_user.password

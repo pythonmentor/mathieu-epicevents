@@ -176,6 +176,16 @@ class Menu:
                     4: "status",
                 }
 
+            elif table == "staff":
+                print("*****Modifier un collaborateur*****")
+                print("Liste des champs modifiables : ")
+                list_of_editable_update_columns = {
+                    1: "name",
+                    2: "first_name",
+                    3: "email",
+                    4: "password",
+                }
+
             for key in list_of_editable_update_columns:
                 print(key, "--", list_of_editable_update_columns[key])
                 print()
